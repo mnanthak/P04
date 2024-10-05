@@ -1,0 +1,3 @@
+https://www.w3schools.com/java/java_try_catch.asp - exception handling in containsCandidates
+https://www.w3schools.com/java/ref_arrays_equals.asp - comparing two arrays for equality
+https://www.tutorialspoint.com/how-to-sort-an-array-of-objects-containing-null-elements-in-java#:~:text=Whenever%20we%20try%20to%20sort,elements%20need%20to%20be%20sorted. - sorting w/ null elements
