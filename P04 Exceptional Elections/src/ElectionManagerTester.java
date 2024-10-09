@@ -2,12 +2,12 @@
 //////////////// Ballot, and Election classes
 // Course: CS 300 Fall 2024
 //
-// Author: Mohnish Nanthakumar
-// Email: mnanthakumar@wisc.edu
+// Author:   Mohnish Nanthakumar
+// Email:    mnanthakumar@wisc.edu
 // Lecturer: Hobbes LeGault
 //
-// Partner Name: Harsh Singh
-// Partner Email: hvsingh@wisc.edu
+// Partner Name:    Harsh Singh
+// Partner Email:   hvsingh@wisc.edu
 // Partner Lecturer's Name: Hobbes LeGault
 //
 // X Write-up states that pair programming is allowed for this assignment.
@@ -289,6 +289,9 @@ public class ElectionManagerTester {
    */
   public static boolean testRemoveCandidateExceptions() {
     // set-up for the first test
+    // we're doing the setup separately, so we can isolate the actual test later.
+    // if anything fails HERE, that's a different problem than the one we're trying to test,
+    // and the test should fail.
     Election election = null;
     Candidate c;
     try {
