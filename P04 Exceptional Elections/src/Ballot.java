@@ -158,7 +158,7 @@ public class Ballot {
     // If no name was found, throw NoSuchElementException stating that seat name wasn't present
     throw new NoSuchElementException("Name does not correspond to an election");
   }
-  
+
   @Override
   /**
    * Creates and returns a String representation of this ballot's voter state as follows: in order, 

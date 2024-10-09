@@ -90,23 +90,31 @@ public class ElectionManagerTester {
    * 
    * @return true if all tests pass, false otherwise
    */
-
   public static boolean testElectionConstructorAndGetters() {
+    // in case we get an unexpected exception from a broken implementation
+    // we handle it with a try-catch to avoid our tester from crashing
     try {
+      // test the constructor
       Election election = new Election("President", 8);
       election.addCandidate(new Candidate("Robert F. Kennedy Jr.", "We The People"));
       election.addCandidate(new Candidate("Donald Trump", "Republican Party"));
+      // test the seat name field
       if (!election.SEAT_NAME.equals("President")) {
         return false;
       }
+      // test the election capacity method for debugging purposes
       if (!(election.capacity() == 8)) {
         return false;
       }
+      // test the overridden toString method for debugging purposes
       String expectedString =
-          "President\nRobert F. Kennedy Jr. (We The People) : 0\nDonald Trump (Republican Party) : 0";
+          "President\nRobert F. Kennedy Jr. (We The People): 0\nDonald Trump (Republican Party): 0";
       if (!(election.toString()).equals(expectedString)) {
+        System.out.println(election);
+        System.out.println(expectedString);
         return false;
       }
+      // test the getNumCandidates method for debugging purposes
       if (!(election.getNumCandidates() == 2)) {
         return false;
       }
@@ -115,7 +123,7 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
-    // all tests pass:
+    // all tests pass
     return true;
   }
 
@@ -148,22 +156,30 @@ public class ElectionManagerTester {
    */
   public static boolean testAddCandidate() {
     Election election;
+    // in case we get an unexpected exception from a broken implementation
+    // we handle it with a try-catch to avoid our tester from crashing
     try {
       election = new Election("President", 8);
+      // test the constructor
       election.addCandidate(new Candidate("Robert F. Kennedy Jr.", "We The People"));
+      // test the getNumCandidates method for debugging purposes
+      if (!(election.getNumCandidates() == 1)) {
+        return false;
+      }
+      // test the election capacity method for debugging purposes
+      if (!(election.capacity() == 8)) {
+        return false;
+      }
+      // test the overridden toString method for debugging purposes
+      String expectedString = "President\nRobert F. Kennedy Jr. (We The People): 0";
+      if (!election.toString().equals(expectedString)) {
+        return false;
+      }
     } catch (Exception e) {
+      // we encountered an exception when we should not have, it is a bad implementation!
       return false;
     }
-    if (!(election.getNumCandidates() == 1)) {
-      return false;
-    }
-    if (!(election.capacity() == 8)) {
-      return false;
-    }
-    String expectedString = "President\nRobert F. Kennedy Jr. (We The People) : 0";
-    if (!election.toString().equals(expectedString)) {
-      return false;
-    }
+    // all tests pass
     return true;
   }
 
@@ -199,24 +215,32 @@ public class ElectionManagerTester {
   public static boolean testVote() {
     Election election;
     Candidate c;
+    // in case we get an unexpected exception from a broken implementation
+    // we handle it with a try-catch to avoid our tester from crashing
     try {
       election = new Election("President", 8);
       c = new Candidate("Robert F. Kennedy Jr.", "We The People");
       election.addCandidate(c);
+      // test the election candidate vote method
       election.vote(c);
+      // test the getNumCandidates method for debugging purposes
+      if (!(election.getNumCandidates() == 1)) {
+        return false;
+      }
+      // test the election capacity method for debugging purposes
+      if (!(election.capacity() == 8)) {
+        return false;
+      }
+      // test the overridden toString method for debugging purposes
+      String expectedString = "President\nRobert F. Kennedy Jr. (We The People): 1";
+      if (!election.toString().equals(expectedString)) {
+        return false;
+      }
     } catch (Exception e) {
+      // we encountered an exception when we should not have, it is a bad implementation!
       return false;
     }
-    if (!(election.getNumCandidates() == 1)) {
-      return false;
-    }
-    if (!(election.capacity() == 8)) {
-      return false;
-    }
-    String expectedString = "President\nRobert F. Kennedy Jr. (We The People) : 1";
-    if (!election.toString().equals(expectedString)) {
-      return false;
-    }
+    // all tests pass
     return true;
   }
 
@@ -272,24 +296,32 @@ public class ElectionManagerTester {
   public static boolean testRemoveCandidate() {
     Election election;
     Candidate c;
+    // in case we get an unexpected exception from a broken implementation
+    // we handle it with a try-catch to avoid our tester from crashing
     try {
       election = new Election("President", 8);
       c = new Candidate("Robert F. Kennedy Jr.", "We The People");
       election.addCandidate(c);
+      // test the removeCandidate method
       election.removeCandidate(c);
-    } catch (Exception e) {
+      // test the getNumCandidates method for debugging purposes
+      if (!(election.getNumCandidates() == 0)) {
       return false;
     }
-    if (!(election.getNumCandidates() == 0)) {
-      return false;
-    }
+      // test the election capacity method for debugging purposes
     if (!(election.capacity() == 8)) {
       return false;
     }
-    String expectedString = "President";
+      // test the overridden toString method for debugging purposes
+      String expectedString = "President";
     if (!election.toString().equals(expectedString)) {
       return false;
     }
+    } catch (Exception e) {
+      // we encountered an exception when we should not have, it is a bad implementation!
+      return false;
+    }
+    // all tests pass
     return true;
   }
 
@@ -362,32 +394,36 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testBallotSetup() {
-    // Phase 1: add elections to the Ballot class
-    // Phase 2: create a Ballot and verify that it has the correct number of elections
-    // (hint: use toString())
-    Election e1;
-    Candidate c;
+    // in case we get an unexpected exception from a broken implementation
+    // we handle it with a try-catch to avoid our tester from crashing
     try {
-      e1 = new Election("President", 3);
-      Ballot.addElection(e1);
-      Ballot.addElection(new Election("Senate", 3));
-      Ballot.addElection(new Election("House", 3));
-      c = new Candidate("Robert F. Kennedy Jr.", "We The People");
+    // Phase 1: add elections to the Ballot class
+      Ballot.addElection(new Election("1", 3));
+      Ballot.addElection(new Election("2", 3));
+      Ballot.addElection(new Election("3", 3));
     } catch (Exception e) {
+      // we encountered an exception when we should not have, it is a bad implementation!
       e.printStackTrace();
       return false;
     }
+    // Phase 2: create a Ballot and verify that it has the correct number of elections
     try {
-      Ballot ballot = new Ballot();
+      Election e1 = new Election("4", 5);
+      Candidate c = new Candidate("Robert F. Kennedy Jr.", "We The People");
       e1.addCandidate(c);
-      ballot.vote("President", c);
-      if (!ballot.toString().equals("President: true\nSenate: false\nHouse: false")) {
+      Ballot.addElection(e1);
+      Ballot ballot = new Ballot();
+      ballot.vote("4", c);
+      // test the overridden toString method for debugging purposes
+      if (!ballot.toString().equals("1: false\n2: false\n3: false\n4: true")) {
         return false;
       }
     } catch (Exception e) {
+      // we encountered an exception when we should not have, it is a bad implementation!
       e.printStackTrace();
       return false;
     }
+    // all tests pass
     return true;
   }
 
@@ -412,9 +448,9 @@ public class ElectionManagerTester {
     }
     // second test for wrongly adding an election to the ballot
     try {
-      Ballot.addElection(new Election("President", 4));
+      Ballot.addElection(new Election("7", 4));
       Ballot ballot = new Ballot();
-      Ballot.addElection(new Election("Senate", 4));
+      Ballot.addElection(new Election("8", 4));
       return false;
     } catch (IllegalStateException e) {
       // this is correct
@@ -426,8 +462,8 @@ public class ElectionManagerTester {
     }
     // third test for adding duplicate ellection to the ballot
     try {
-      Ballot.addElection(new Election("President", 4));
-      Ballot.addElection(new Election("President", 4));
+      Ballot.addElection(new Election("9", 4));
+      Ballot.addElection(new Election("9", 4));
     } catch (IllegalArgumentException e) {
       // this is correct
     } catch (Exception e) {
@@ -447,36 +483,47 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testBallotVote() {
-    Election e1 = new Election("President", 3);
+    // we're doing the setup separately, so we can isolate the actual test later.
+    // if anything fails HERE, that's a different problem than the one we're trying to test,
+    // and the test should fail.
+    Election e1;
     Candidate c;
     try {
+      e1  = new Election("10", 3);
       Ballot.addElection(e1);
-      Ballot.addElection(new Election("Senate", 3));
-      Ballot.addElection(new Election("House", 3));
+      Ballot.addElection(new Election("11", 3));
+      Ballot.addElection(new Election("12", 3));
       c = new Candidate("Robert F. Kennedy Jr.", "We The People");
     } catch (Exception e) {
+      // we encountered an exception when we should not have, it is a bad implementation!
       e.printStackTrace();
       return false;
     }
-    Ballot ballot = new Ballot();
+    Ballot ballot = new Ballot(); // ballot initialized outside try-cath for scope reasons
     try {
       e1.addCandidate(c);
-      ballot.vote("President", c);
+      // test vote
+      ballot.vote("10", c);
     } catch (Exception e) {
+      // we encountered an exception when we should not have, it is a bad implementation!
       e.printStackTrace();
       return false;
     }
+    // if this ballot has already voted for an election, don't let it vote again for the election
     try {
-      if (!ballot.hasVoted("President")) {
+      if (!ballot.hasVoted("10")) {
         return false;
       }
     } catch (Exception e) {
+      // we encountered an exception when we should not have, it is a bad implementation!
       e.printStackTrace();
       return false;
     }
-    if (!ballot.toString().equals("President: true\nSenate: false\nHouse: false")) {
+    // test the overridden toString method for debugging purposes
+    if (!ballot.toString().equals("10: true\n11: false\n12: false")) {
       return false;
     }
+    // all tests pass
     return true;
   }
 
