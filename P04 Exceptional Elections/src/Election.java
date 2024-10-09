@@ -1,4 +1,4 @@
-// Title:    The Election Class represents an Election with a list of candidates running and election info
+// Title:    Class representing an Election with a list of candidates running and election info
 // Course:   CS 300 Fall 2024
 //
 // Author:   Mohnish Nanthakumar
@@ -86,7 +86,17 @@ public class Election {
    *         for this election
    */
   public void addCandidate(Candidate candidate) {
+    if (containsCandidate(candidate)) {
+      throw new IllegalArgumentException("Candidate is already present in candidates list");
+    }
     
+    // Since candidate wasn't present, add candidate at next available index if there is space
+    if (numCandidates < capacity()) {
+      candidates[numCandidates] = candidate;
+    }
+    
+    // Increase numCandidates to account for new candidate added
+    numCandidates++;
   }
   
   /**
@@ -99,7 +109,33 @@ public class Election {
    *         of candidates
    */
   public void removeCandidate(Candidate candidate) {
+    // Throws IllegalStateException if candidates list is empty
+    if (numCandidates == 0) {
+      throw new IllegalStateException("Candidates list is empty");
+    }
+    // Throws NoSuchElementException if candidate isn't present
+    if (!containsCandidate(candidate)) {
+      throw new NoSuchElementException("Candidate isn't present in list");
+    }
     
+    // Iterate through array and find index where candidate is present
+    for (int i = 0; i < numCandidates; i++) {
+      if (candidates[i].equals(candidate)) {
+        // At that index, shift all elements to the right over one (automatically removes element)
+        for (int j = i; j < numCandidates - 1; j++) {
+          candidates[j] = candidates[j + 1];
+        }
+        
+        // Set last element to null (duplicate of element to the left)
+        candidates[numCandidates - 1] = null;
+        
+        // Decrease number of candidates
+        numCandidates--;
+        
+        // Break out of loop
+        break;
+      }
+    }
   }
   
   /**
@@ -107,20 +143,45 @@ public class Election {
    * 
    * @return the Candidate with >50% of the votes across this election's candidates
    * @throws IllegalStateException if the candidates list is empty
-   * @throws NoSuchElementException if no one candidate has more than 50% of the votes (P01's "contingent" election)
+   * @throws NoSuchElementException if no one candidate has more than 50% of the votes (P01's 
+   * "contingent" election)
    */
   public Candidate findWinner() {
-    return new Candidate("Name", "Party");
+    // Throws IllegalStateException if candidates list is empty
+    if (numCandidates == 0) {
+      throw new IllegalStateException("Candidates list is empty");
+    }
+    
+    // Iterates through array and checks if any candidate has more than 50% of votes, if true 
+    // returns candidate
+    for (int i = 0; i < numCandidates; i++) {
+      if (candidates[i].getNumVotes() / calculateTotalVotes() > 0.5) {
+        return candidates[i];
+      }
+    }
+    
+    // If no candidate was returned, throws NoSuchElementException
+    throw new NoSuchElementException("No candidate has more than 50% of the votes");
   }
   
   /**
    * Increases the vote count of the given candidate by one
    * 
    * @param candidate the candidate to vote for
-   * @throws NoSuchElementException the candidate to vote for
+   * @throws NoSuchElementException if the given candidate is not present in this election
    */
   public void vote(Candidate candidate) {
+    // Throws NoSuchElementException if candidate isn't present
+    if (!containsCandidate(candidate)) {
+      throw new NoSuchElementException("Candidate isn't present in list");
+    }
     
+    // Finds index of candidate and adds a vote
+    for (int i = 0; i < numCandidates; i++) {
+      if (candidates[i].equals(candidate)) {
+        candidates[i].addVote();
+      }
+    }
   }
   
   @Override
@@ -139,7 +200,16 @@ public class Election {
    *         with a newline
    */
   public String toString() {
-    return "";
+    // Begin election info String with name of position
+    String electionInfo = SEAT_NAME;
+    
+    // Add each candidate's info on every newline
+    for (int i = 0; i < numCandidates; i++) {
+      electionInfo += "\n" + candidates[i].toString();
+    }
+    
+    // return the election info String
+    return electionInfo;
   }
   
   
@@ -155,6 +225,49 @@ public class Election {
    *         otherwise.
    */
   public boolean equals(Object anObject) {  
+    // Check if object is an instance of the Election class, return false if it isn't true
+    if (! (anObject instanceof Candidate)) {
+      return false;
+    }
+    else {
+      // If object is an instance of the Candidate class 
+      // Return true if info matches (ignore capitalization)
+      if (this.toString().equalsIgnoreCase(anObject.toString())) {
+        return true;
+      }
+    }
+    
+    // Return false if election info didn't match
     return false;
+  }
+  
+  /**
+   * Checks if candidate exists in current list of candidates
+   * 
+   * @param candidate the candidate we are looking for in the array
+   * @return true if candidate is present, false otherwise
+   */
+  private boolean containsCandidate(Candidate candidate) {
+    // Iterate through array, and if candidate is present return true, otherwise return false
+    for (int i = 0; i < numCandidates; i++) {
+      if (candidates[i].equals(candidate)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * Calculate the total number of votes in the election
+   * 
+   * @return a double representing the total number of votes in the election
+   */
+  private double calculateTotalVotes() {
+    // For every candidate in list, sum up all of their votes
+    double totalVotes = 0;
+    for (int i = 0; i < numCandidates; i++) {
+       totalVotes += candidates[i].getNumVotes();
+    }
+    return totalVotes;
   }
 }
