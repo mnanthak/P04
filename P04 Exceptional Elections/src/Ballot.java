@@ -1,4 +1,4 @@
-// Title:    The Ballot Class represents a Ballot with a list of Elections, which also contributes to voting 
+// Title:    Class representing a Ballot with a list of Elections, which also contributes to voting 
 //           in those elections
 // Course:   CS 300 Fall 2024
 //
@@ -15,7 +15,9 @@
 //   X We have registered our team prior to the team registration deadline.
 //
 // Persons:         NONE
-// Online Sources:  NONE
+// Online Sources:  
+//           https://stackoverflow.com/questions/7937029/how-to-break-out-or-exit-a-method-in-java
+//                  (Used to understand how to exit a method in java)
 
 import java.util.ArrayList; 
 import java.util.NoSuchElementException;
@@ -34,7 +36,7 @@ public class Ballot {
   /**
    * An ArrayList containing the active elections that Ballots may vote in.
    */
-  private static ArrayList<Election> elections;
+  private static ArrayList<Election> elections = new ArrayList<>();
   
   /**
    * An array containing one boolean per Election in the elections ArrayList at the time of this 
@@ -53,7 +55,16 @@ public class Ballot {
    *         to vote in yet
    */
   public Ballot() {
+    if (elections.size() == 0) {
+      throw new IllegalStateException("No elections to vote for, add an election first.");
+    }
     
+    // Creates array for hasVoted that is the same length as the list of election
+    hasVoted = new boolean[elections.size()];
+    
+    
+    // Set ballotsCreated to true once ballot is successfully created
+    ballotsCreated = true;
   }
   
   /**
@@ -66,7 +77,20 @@ public class Ballot {
    * @throws IllegalArgumentException if the election is already present in the list
    */
   public static void addElection(Election election) {
+    // Throws IllegalStateException if ballots have been created
+    if (ballotsCreated) {
+      throw new IllegalStateException("Ballots have been created, no election may be added");
+    }
     
+    // Throws IllegalArgumentException if election already exists
+    for (int i = 0; i < elections.size(); i++) {
+      if (elections.get(i).equals(election)) {
+        throw new IllegalArgumentException("Election is already present in the list");
+      }
+    }
+    
+    // Adds election to list of elections if exception hasn't been thrown
+    elections.add(election);
   }
   
   /**
@@ -84,7 +108,31 @@ public class Ballot {
    *         this ballot, or if the given candidate is not running in that election
    */
   public void vote(String seatName, Candidate candidate) {
+    // Finds election that has the same seat name as the parameter entered
+    for (int i = 0; i < hasVoted.length; i++) {
+      if (elections.get(i).SEAT_NAME.equals(seatName)) {
+        
+        // If election with seat name has been found, check if vote has been cast for this seat 
+        // name
+        if (hasVoted[i]) {
+          // If vote has been cast, throw IllegalStateException
+          throw new IllegalStateException("Ballot has already voted in the given election.");
+        }
+        
+        // Add vote for specific candidate, should throw error if candidate isn't present
+        elections.get(i).vote(candidate);
+        
+        // Set hasVoted for specific election to true
+        hasVoted[i] = true;
+        
+        // Exit the method entirely through empty return statement, will prevent exception from 
+        // being thrown (seat name was found)
+        return;
+      }
+    }
     
+    // Throw NoSuchElementException if seat name wasn't present in list
+    throw new NoSuchElementException("Seat name isn't present in list of elections");
   }
   
   /**
@@ -98,7 +146,17 @@ public class Ballot {
    *         this ballot
    */
   public boolean hasVoted(String seatName) {
-    return false;
+    // Finds election that has the same seat name as the parameter entered
+    for (int i = 0; i < hasVoted.length; i++) {
+      if (elections.get(i).SEAT_NAME.equals(seatName)) {
+        // If election with seat name has been found, finds whether the person has voted in that 
+        // election and returns that value
+        return hasVoted[i];
+      }
+    }
+    
+    // If no name was found, throw NoSuchElementException stating that seat name wasn't present
+    throw new NoSuchElementException("Name does not correspond to an election");
   }
   
   @Override
@@ -117,6 +175,14 @@ public class Ballot {
    *         end with a newline
    */
   public String toString() {
-    return "";
+    // Get info for first election in list without newline character
+    String ballotInfo = elections.get(0).SEAT_NAME + ": " + hasVoted[0];
+    
+    // Get remaining info for the election in list with newline character
+    for (int i = 1; i < hasVoted.length; i++) {
+      ballotInfo += "\n" + elections.get(i).SEAT_NAME + ": " + hasVoted[i];
+    }
+    
+    return ballotInfo;
   }
 }
