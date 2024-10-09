@@ -14,7 +14,9 @@
 //   X We have registered our team prior to the team registration deadline.
 //
 // Persons:         NONE
-// Online Sources:  NONE
+// Online Sources:  https://stackoverflow.com/q/879603
+//                  (Used to help understand logic behind removing candidate and shift all elements 
+//                  over)
 
 import java.util.NoSuchElementException;
 
