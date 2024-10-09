@@ -2,12 +2,12 @@
 //////////////// Ballot, and Election classes
 // Course: CS 300 Fall 2024
 //
-// Author:   Mohnish Nanthakumar
-// Email:    mnanthakumar@wisc.edu
+// Author: Mohnish Nanthakumar
+// Email: mnanthakumar@wisc.edu
 // Lecturer: Hobbes LeGault
 //
-// Partner Name:    Harsh Singh
-// Partner Email:   hvsingh@wisc.edu
+// Partner Name: Harsh Singh
+// Partner Email: hvsingh@wisc.edu
 // Partner Lecturer's Name: Hobbes LeGault
 //
 // X Write-up states that pair programming is allowed for this assignment.
@@ -72,10 +72,14 @@ public class ElectionManagerTester {
     try {
       Candidate c = new Candidate("", null);
     } catch (IllegalArgumentException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than IllegalArgumentException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // test passes
     return true;
   }
 
@@ -125,10 +129,14 @@ public class ElectionManagerTester {
     try {
       Election election1 = new Election("President", -5);
     } catch (IllegalArgumentException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than IllegalArgumentException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // test passes
     return true;
   }
 
@@ -171,10 +179,14 @@ public class ElectionManagerTester {
       election.addCandidate(new Candidate("Robert F. Kennedy Jr.", "We The People"));
       election.addCandidate(new Candidate("Robert F. Kennedy Jr.", "We The People"));
     } catch (IllegalArgumentException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than IllegalArgumentException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // test passes
     return true;
   }
 
@@ -288,16 +300,17 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testRemoveCandidateExceptions() {
-    // set-up for the first test
+    // setup for first test
     // we're doing the setup separately, so we can isolate the actual test later.
     // if anything fails HERE, that's a different problem than the one we're trying to test,
     // and the test should fail.
-    Election election = null;
+    Election election = null; // declare outside of the try block for scope reasons
     Candidate c;
     try {
       election = new Election("President", 8);
       c = new Candidate("Robert F. Kennedy Jr.", "We The People");
     } catch (Exception e) {
+      System.out.println("Unable to continue with this test for unrelated reasons!!");
       e.printStackTrace();
       return false;
     }
@@ -307,12 +320,13 @@ public class ElectionManagerTester {
     } catch (IllegalStateException e) {
       // this is correct
     } catch (Exception e) {
-      // this only runs if an exception other than NoSuchElementException was thrown,
+      // this only runs if an exception other than IllegalStateException was thrown,
       // which is wrong!
       e.printStackTrace();
       return false;
     }
-    // set-up for second test
+    // setup for second test
+    // same thing here, isolating setup from test
     Candidate c1;
     Candidate c2;
     try {
@@ -321,6 +335,7 @@ public class ElectionManagerTester {
       c2 = new Candidate("Donald Trump", "Republican Party");
       election.addCandidate(c1);
     } catch (Exception e) {
+      System.out.println("Unable to continue with this test for unrelated reasons!!");
       e.printStackTrace();
       return false;
     }
@@ -383,32 +398,45 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testBallotSetupExceptions() {
+    // first test for invalid Ballot initialization
     try {
       Ballot ballot = new Ballot();
       return false;
     } catch (IllegalStateException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than IllegalStateException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // second test for wrongly adding an election to the ballot
     try {
       Ballot.addElection(new Election("President", 4));
       Ballot ballot = new Ballot();
       Ballot.addElection(new Election("Senate", 4));
       return false;
     } catch (IllegalStateException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than IllegalStateException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // third test for adding duplicate ellection to the ballot
     try {
       Ballot.addElection(new Election("President", 4));
       Ballot.addElection(new Election("President", 4));
     } catch (IllegalArgumentException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than IllegalStateException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // all tests pass
     return true;
   }
 
@@ -459,39 +487,66 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testBallotVoteExceptions() {
-    Election e1 = new Election("President", 8);
-    Election e2 = new Election("Governor", 3);
-    Candidate c1 = new Candidate("Robert F. Kennedy Jr.", "We The People");
-    Candidate c2 = new Candidate("Ron DeSantis", "Governor");
-    e1.addCandidate(c1);
-    e2.addCandidate(c2);
-    Ballot.addElection(e1);
-    Ballot ballot = new Ballot();
-    ballot.vote("President", c1);
+    // we're doing the setup separately, so we can isolate the actual test later.
+    // if anything fails HERE, that's a different problem than the one we're trying to test,
+    // and the test should fail.
+    Election e1 = null;
+    Election e2 = null;
+    Candidate c1 = null;
+    Candidate c2 = null;
+    Ballot ballot = null;
+    try {
+      e1 = new Election("President", 8);
+      e2 = new Election("Governor", 3);
+      c1 = new Candidate("Robert F. Kennedy Jr.", "We The People");
+      c2 = new Candidate("Ron DeSantis", "Governor");
+      e1.addCandidate(c1);
+      e2.addCandidate(c2);
+      Ballot.addElection(e1);
+      ballot = new Ballot();
+      ballot.vote("President", c1);
+    } catch (Exception e) {
+      System.out.println("Unable to continue with this test for unrelated reasons!!");
+      e.printStackTrace();
+      return false;
+    }
+    // first test for if the ballot has already voted in the given election
     try {
       ballot.vote("President", c1);
       return false;
     } catch (IllegalStateException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than IllegalStateException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // second test for if the given seat name does not correspond to an election on this ballot
     try {
       ballot.vote("Senate", c1);
       return false;
     } catch (NoSuchElementException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than NoSuchElementException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // third test for if a candidate is not running in an election on this ballot
     try {
       ballot.vote("President", c2);
       return false;
     } catch (NoSuchElementException e) {
+      // this is correct
     } catch (Exception e) {
+      // this only runs if an exception other than NoSuchElementException was thrown,
+      // which is wrong!
       e.printStackTrace();
       return false;
     }
+    // all test pass
     return true;
   }
 
