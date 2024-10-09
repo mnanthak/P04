@@ -1,4 +1,4 @@
-// Title:    Class representing a Ballot with a list of Elections, which also contributes to voting 
+// Title:    The Ballot Class represents a Ballot with a list of Elections, which also contributes to voting 
 //           in those elections
 // Course:   CS 300 Fall 2024
 //

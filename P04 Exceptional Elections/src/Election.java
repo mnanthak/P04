@@ -1,4 +1,4 @@
-// Title:    Class representing an Election with a list of candidates running and election info
+// Title:    The Election Class represents an Election with a list of candidates running and election info
 // Course:   CS 300 Fall 2024
 //
 // Author:   Mohnish Nanthakumar

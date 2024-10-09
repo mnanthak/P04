@@ -1,4 +1,4 @@
-// Title:    Class representing a Candidate in an election with information about the candidate
+// Title:    The Candiate Class represents a Candidate in an election with information about the candidate
 // Course:   CS 300 Fall 2024
 //
 // Author:   Mohnish Nanthakumar
