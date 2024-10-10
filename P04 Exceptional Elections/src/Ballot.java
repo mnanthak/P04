@@ -32,7 +32,6 @@ public class Ballot {
    * A class variable to track whether ballots have yet been created.
    */
   private static boolean ballotsCreated;
-  
   /**
    * An ArrayList containing the active elections that Ballots may vote in.
    */
@@ -88,7 +87,6 @@ public class Ballot {
         throw new IllegalArgumentException("Election is already present in the list");
       }
     }
-    
     // Adds election to list of elections if exception hasn't been thrown
     elections.add(election);
   }
@@ -157,6 +155,14 @@ public class Ballot {
     
     // If no name was found, throw NoSuchElementException stating that seat name wasn't present
     throw new NoSuchElementException("Name does not correspond to an election");
+  }
+
+  /**
+   * Clears the ArrayList of Elections
+   */
+  public static void clearElections() {
+    elections.clear();
+    ballotsCreated = false;
   }
 
   @Override

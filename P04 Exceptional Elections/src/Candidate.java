@@ -45,7 +45,7 @@ public class Candidate {
    * @throws IllegalArgumentException if the name and/or party is null or blank
    */
   public Candidate(String name, String party) {
-    if (name == null || party == null || name.equals(" ") || party.equals(" ")) {
+    if (name == null || party == null || name.startsWith(" ") || party.startsWith(" ")) {
       throw new IllegalArgumentException("Name and party cannot be null or blank");
     }
     

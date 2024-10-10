@@ -39,7 +39,7 @@ public class Election {
   /**
    * The name of the position for which this election is being held
    */
-  final String SEAT_NAME;
+  public final String SEAT_NAME;
   
   /**
    * Initializes the oversize array for this election's candidates and sets the name of the 
@@ -50,7 +50,7 @@ public class Election {
    * @throws IllegalArgumentException if the maximum number of candidates is not strictly greater 
    *         than 0
    */
-  Election(String seatName, int maxCandidates) {
+  public Election(String seatName, int maxCandidates) {
     if (maxCandidates <= 0) {
       throw new IllegalArgumentException("Maximum number of candidates must be greater than 0");
     }
@@ -228,7 +228,7 @@ public class Election {
    */
   public boolean equals(Object anObject) {  
     // Check if object is an instance of the Election class, return false if it isn't true
-    if (! (anObject instanceof Candidate)) {
+    if (! (anObject instanceof Election)) {
       return false;
     }
     else {

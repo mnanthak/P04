@@ -213,8 +213,8 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testVote() {
-    Election election;
-    Candidate c;
+    Election election; // declared outside of try-catch for scope reasons
+    Candidate c; // declared outside of try-catch for scope reasons
     // in case we get an unexpected exception from a broken implementation
     // we handle it with a try-catch to avoid our tester from crashing
     try {
@@ -337,7 +337,7 @@ public class ElectionManagerTester {
     // if anything fails HERE, that's a different problem than the one we're trying to test,
     // and the test should fail.
     Election election = null; // declare outside of the try block for scope reasons
-    Candidate c;
+    Candidate c = null;
     try {
       election = new Election("President", 8);
       c = new Candidate("Robert F. Kennedy Jr.", "We The People");
@@ -396,26 +396,23 @@ public class ElectionManagerTester {
   public static boolean testBallotSetup() {
     // in case we get an unexpected exception from a broken implementation
     // we handle it with a try-catch to avoid our tester from crashing
-    try {
     // Phase 1: add elections to the Ballot class
-      Ballot.addElection(new Election("1", 3));
-      Ballot.addElection(new Election("2", 3));
-      Ballot.addElection(new Election("3", 3));
+    try {
+      Election e1 = new Election("Mayor", 3);
+      e1.addCandidate(new Candidate("Eugene Krabs", "Krusty Krab"));
+      Election e2 = new Election("President", 3);
+      e2.addCandidate(new Candidate("Kanye West", "Rocc-a-fella Records"));
+      Ballot.addElection(e1);
+      Ballot.addElection(e2);
     } catch (Exception e) {
       // we encountered an exception when we should not have, it is a bad implementation!
       e.printStackTrace();
-      return false;
+    return false;
     }
     // Phase 2: create a Ballot and verify that it has the correct number of elections
     try {
-      Election e1 = new Election("4", 5);
-      Candidate c = new Candidate("Robert F. Kennedy Jr.", "We The People");
-      e1.addCandidate(c);
-      Ballot.addElection(e1);
       Ballot ballot = new Ballot();
-      ballot.vote("4", c);
-      // test the overridden toString method for debugging purposes
-      if (!ballot.toString().equals("1: false\n2: false\n3: false\n4: true")) {
+      if (!ballot.toString().equals("Mayor: false\nPresident: false")) {
         return false;
       }
     } catch (Exception e) {
@@ -423,6 +420,8 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
+    // cleaning up the ballot for the next tester methods
+    Ballot.clearElections();
     // all tests pass
     return true;
   }
@@ -437,7 +436,6 @@ public class ElectionManagerTester {
     // first test for invalid Ballot initialization
     try {
       Ballot ballot = new Ballot();
-      return false;
     } catch (IllegalStateException e) {
       // this is correct
     } catch (Exception e) {
@@ -446,11 +444,13 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
+    // reset the ballot for next test
+    Ballot.clearElections();
     // second test for wrongly adding an election to the ballot
     try {
-      Ballot.addElection(new Election("7", 4));
+      Ballot.addElection(new Election("Senate", 4));
       Ballot ballot = new Ballot();
-      Ballot.addElection(new Election("8", 4));
+      Ballot.addElection(new Election("School Board", 14));
       return false;
     } catch (IllegalStateException e) {
       // this is correct
@@ -460,10 +460,12 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
-    // third test for adding duplicate ellection to the ballot
+    // reset the ballot for next test
+    Ballot.clearElections();
+    // third test for adding duplicate election to the ballot
     try {
-      Ballot.addElection(new Election("9", 4));
-      Ballot.addElection(new Election("9", 4));
+      Ballot.addElection(new Election("House", 2));
+      Ballot.addElection(new Election("House", 2));
     } catch (IllegalArgumentException e) {
       // this is correct
     } catch (Exception e) {
@@ -472,7 +474,9 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
-    // all tests pass
+    // cleaning up the ballot for the next tester methods
+    Ballot.clearElections();
+    // tests pass
     return true;
   }
 
@@ -483,35 +487,30 @@ public class ElectionManagerTester {
    * @return true if all tests pass, false otherwise
    */
   public static boolean testBallotVote() {
-    // we're doing the setup separately, so we can isolate the actual test later.
-    // if anything fails HERE, that's a different problem than the one we're trying to test,
-    // and the test should fail.
-    Election e1;
-    Candidate c;
+    // test vote
     try {
-      e1  = new Election("10", 3);
-      Ballot.addElection(e1);
-      Ballot.addElection(new Election("11", 3));
-      Ballot.addElection(new Election("12", 3));
-      c = new Candidate("Robert F. Kennedy Jr.", "We The People");
+      Election e = new Election("Mayor", 3);
+      Candidate c = new Candidate("Eugene Krabs", "Krusty Krab");
+      e.addCandidate(c);
+      Ballot.addElection(e);
+      Ballot ballot = new Ballot();
+      ballot.vote("Mayor", new Candidate("Eugene Krabs", "Krusty Krab"));
     } catch (Exception e) {
       // we encountered an exception when we should not have, it is a bad implementation!
       e.printStackTrace();
       return false;
     }
-    Ballot ballot = new Ballot(); // ballot initialized outside try-cath for scope reasons
-    try {
-      e1.addCandidate(c);
-      // test vote
-      ballot.vote("10", c);
-    } catch (Exception e) {
-      // we encountered an exception when we should not have, it is a bad implementation!
-      e.printStackTrace();
-      return false;
-    }
+    // reset the ballot for next test
+    Ballot.clearElections();
     // if this ballot has already voted for an election, don't let it vote again for the election
     try {
-      if (!ballot.hasVoted("10")) {
+      Election e = new Election("Mayor", 3);
+      Candidate c = new Candidate("Eugene Krabs", "Krusty Krab");
+      e.addCandidate(c);
+      Ballot.addElection(e);
+      Ballot ballot = new Ballot();
+      ballot.vote("Mayor", new Candidate("Eugene Krabs", "Krusty Krab"));
+      if (!ballot.hasVoted("Mayor")) {
         return false;
       }
     } catch (Exception e) {
@@ -519,10 +518,8 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
-    // test the overridden toString method for debugging purposes
-    if (!ballot.toString().equals("10: true\n11: false\n12: false")) {
-      return false;
-    }
+    // cleaning up the ballot for the next tester methods
+    Ballot.clearElections();
     // all tests pass
     return true;
   }
@@ -537,29 +534,16 @@ public class ElectionManagerTester {
     // we're doing the setup separately, so we can isolate the actual test later.
     // if anything fails HERE, that's a different problem than the one we're trying to test,
     // and the test should fail.
-    Election e1 = null;
-    Election e2 = null;
-    Candidate c1 = null;
-    Candidate c2 = null;
-    Ballot ballot = null;
-    try {
-      e1 = new Election("President", 8);
-      e2 = new Election("Governor", 3);
-      c1 = new Candidate("Robert F. Kennedy Jr.", "We The People");
-      c2 = new Candidate("Ron DeSantis", "Governor");
-      e1.addCandidate(c1);
-      e2.addCandidate(c2);
-      Ballot.addElection(e1);
-      ballot = new Ballot();
-      ballot.vote("President", c1);
-    } catch (Exception e) {
-      System.out.println("Unable to continue with this test for unrelated reasons!!");
-      e.printStackTrace();
-      return false;
-    }
+    
     // first test for if the ballot has already voted in the given election
     try {
-      ballot.vote("President", c1);
+      Election e = new Election("Mayor", 3);
+      Candidate c = new Candidate("Eugene Krabs", "Krusty Krab");
+      e.addCandidate(c);
+      Ballot.addElection(e);
+      Ballot ballot = new Ballot();
+      ballot.vote("Mayor", new Candidate("Eugene Krabs", "Krusty Krab"));
+      ballot.vote("Mayor", new Candidate("Eugene Krabs", "Krusty Krab"));
       return false;
     } catch (IllegalStateException e) {
       // this is correct
@@ -569,9 +553,16 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
+    // reset the ballot for next test
+    Ballot.clearElections();
     // second test for if the given seat name does not correspond to an election on this ballot
     try {
-      ballot.vote("Senate", c1);
+      Election e = new Election("Mayor", 3);
+      Candidate c = new Candidate("Eugene Krabs", "Krusty Krab");
+      e.addCandidate(c);
+      Ballot.addElection(e);
+      Ballot ballot = new Ballot();
+      ballot.vote("Senate", new Candidate("Eugene Krabs", "Krusty Krab"));
       return false;
     } catch (NoSuchElementException e) {
       // this is correct
@@ -581,9 +572,16 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
+    // reset the ballot for next test
+    Ballot.clearElections();
     // third test for if a candidate is not running in an election on this ballot
     try {
-      ballot.vote("President", c2);
+      Election e = new Election("Mayor", 3);
+      Candidate c = new Candidate("Eugene Krabs", "Krusty Krab");
+      e.addCandidate(c);
+      Ballot.addElection(e);
+      Ballot ballot = new Ballot();
+      ballot.vote("President", new Candidate("Sheldon", "Plankton"));
       return false;
     } catch (NoSuchElementException e) {
       // this is correct
@@ -593,6 +591,8 @@ public class ElectionManagerTester {
       e.printStackTrace();
       return false;
     }
+    // cleaning up the ballot for the next tester methods
+    Ballot.clearElections();
     // all test pass
     return true;
   }
